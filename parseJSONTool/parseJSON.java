@@ -4,13 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 import Model.Business;
 import Model.Photo;
@@ -19,11 +16,16 @@ import Model.User;
 
 
 public class parseJSON {
+	public static List parseJSONStringToList(String jsonString){
+		return JSON.parseArray(jsonString);
+	}
+	public static Map parseJSONStringToMap(String jsonString){
+		return JSON.parseObject(jsonString).getInnerMap();
+	}
 	public static List parseJSONFile(String filename,Class cla){
 			
 		   File file = new File(filename);
 		   if(file.exists()){
-			 
 			   try {
 				BufferedReader reader = new BufferedReader(
 						   new InputStreamReader(new FileInputStream(file)));
@@ -44,6 +46,7 @@ public class parseJSON {
 						Business business = JSON.parseObject(readline,Business.class);
 						list.add(business);
 					}
+					//List list1 = parseJSONStringToList(list.get(0).getCategories());
 					reader.close();
 					return list;
 				}
@@ -73,10 +76,10 @@ public class parseJSON {
 	return null;
 	}
 	
-	/* public static void main(String[] args){
+	public static void main(String[] args){
 		 //参数1:文件路径,参数2:Model.class,返回值:list<Model>
 		 List<Business> list = parseJSONFile("FilterdBusiness.json",Business.class);
 		
 	   }
-	   */
+	   
 }
