@@ -23,8 +23,8 @@ DROP TABLE IF EXISTS `business`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `business` (
-  `id` varchar(45) NOT NULL,
   `attributes` json DEFAULT NULL,
+  `id` varchar(45) NOT NULL,
   `categories` json DEFAULT NULL,
   `city` varchar(255) DEFAULT NULL,
   `full_address` text,
@@ -37,7 +37,6 @@ CREATE TABLE `business` (
   `review_count` int(11) DEFAULT NULL,
   `stars` float DEFAULT NULL,
   `state` varchar(8) DEFAULT NULL,
-  `type` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -108,4 +107,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-04-07 17:54:03
+-- Dump completed on 2018-04-07 21:44:04
