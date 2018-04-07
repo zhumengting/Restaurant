@@ -43,20 +43,6 @@ CREATE TABLE `business` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `events`
---
-
-DROP TABLE IF EXISTS `events`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `events` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `properties` json DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) /*!50100 TABLESPACE `mysql` */ ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `photo`
 --
 
