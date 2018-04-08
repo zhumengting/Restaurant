@@ -1,28 +1,7 @@
-package Model;
+package Models;
 
 public class Business {
 
-	/*private String Accepts_Credit_Cards="";
-	
-	private String Alcohol="";
-	private String Ambience="";
-	private String Attire="";
-	private String Good_For="";
-	private String Good_For_Groups="";
-	private String Good_for_Kids="";
-	private String Noise_Level="";
-	private String Parking="";
-	
-	private String neighborhoods="";
-	private String type="";
-	private String name="";
-	private String state="";
-	private boolean Delivery;
-	private boolean Has_TV;
-	private boolean Outdoor_Seating;
-
-	private boolean Caters;
-	Price_Range*/
 	private String business_id="";
 	private String attributes="";
 	private String neighborhoods="";

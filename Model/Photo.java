@@ -1,4 +1,4 @@
-package Model;
+package Models;
 
 public class Photo {
 	private String photo_id = "";

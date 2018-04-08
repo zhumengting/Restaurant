@@ -1,4 +1,4 @@
-package Model;
+package Models;
 
 public class Review {
 	private String business_id="";
@@ -7,6 +7,7 @@ public class Review {
 	private String text="";
 	private String votes="";
 	private int stars;
+	private String user_id="";
 	/**
 	 * @return the business_id
 	 */
@@ -78,5 +79,11 @@ public class Review {
 	 */
 	public void setStars(int stars) {
 		this.stars = stars;
+	}
+	public String getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
 	}
 }
