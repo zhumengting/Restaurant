@@ -178,16 +178,16 @@ public class BItem {
 	/**
 	 * @return the stars
 	 */
-	
-	/**
-	 * @return the stars
-	 */
 	public String getStars() {
 		return stars+"%";
+	}
+	public float getFloatStars() {
+		return stars/20;
 	}
 	/**
 	 * @param stars the stars to set
 	 */
+	
 	public void setStars(float stars) {
 		this.stars = stars*20;
 	}

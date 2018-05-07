@@ -1,7 +1,41 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-import="com.food.util.*"
+import="com.food.util.*,com.food.model.*"
     pageEncoding="UTF-8"%>
+    <%
+    User user=(User)request.getSession().getAttribute("loginUser");
+	//在页面上显示cookie
+	if(user==null){
+		String loginCookieUserName=null;
+		String loginCookieId=null;
+		String loginCookiePassword=null;
+		String isTimeout=null;
+		Cookie[] cookies=request.getCookies();
+		if(null!=cookies){    
+            for(Cookie cookie : cookies){     
+                    if("loginUserName".equals(cookie.getName())){  
+                        loginCookieUserName = cookie.getValue();  
+                    }else if("loginId".equals(cookie.getName())){  
+                        loginCookieId = cookie.getValue();  
+                    }else if("loginPassword".equals(cookie.getName())){  
+                        loginCookiePassword = cookie.getValue();  
+                    }else if("isTimeout".equals(cookie.getName())){  
+                    	isTimeout = cookie.getValue();  
+                    }      
+            }
+            if(isTimeout!=null){
+            	user=new User(loginCookieId,loginCookiePassword);
+            	user.setName(loginCookieUserName);
+                request.getSession().setAttribute("loginUser", user);
+            }else{
+            	 user=new User("","");
+     			user.setName("请登陆");
+            }
+		}
+	}else{
+		pageContext.setAttribute("loginUser",user);
+	}
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html lang="en-US" itemscope="itemscope" itemtype="http://schema.org/WebPage">
@@ -57,7 +91,7 @@ import="com.food.util.*"
 			<ul id="menu-top-bar-right" class="nav nav-inline pull-right animate-dropdown flip">
 				<li class="menu-item animate-dropdown"><a title="Store Locator" href="#"><i class="ec ec-map-pointer"></i>北京</a></li>
 				<!-- <li class="menu-item animate-dropdown"><a title="Track Your Order" href="track-your-order.html"><i class="ec ec-transport"></i>Track Your Order</a></li> -->
-				<li class="menu-item animate-dropdown"><a title="登陆" href="tologin.do"><i class="ec ec-shopping-bag"></i><input type="text" style="border:0;width:120px;readonly = "readonly"  id="username" value="你好，请登录" name="username"/></a></li>
+				<li class="menu-item animate-dropdown"><a title="登陆" href="ToLogin.do"><i class="ec ec-shopping-bag"></i><input type="text" style="border:0;width:120px;readonly = "readonly"  id="username" value="你好，<%=user.getName()%>" name="username"/></a></li>
 				<li class="menu-item animate-dropdown"><a title="个人空间" href="my-account.html"><i class="ec ec-user"></i>个人空间</a></li>
 			
 			</ul>
@@ -79,7 +113,7 @@ import="com.food.util.*"
 </div>
 <!-- ============================================================= Header Logo : End============================================================= -->
 
-            <form class="navbar-search" method="get" action="/">
+            <form class="navbar-search" method="post" action="search.do">
 	<label class="sr-only screen-reader-text" for="search"></label>
 	<div class="input-group">
 		<input type="text" id="search" class="form-control search-field" dir="ltr" value="" name="search"  placeholder="在这里搜索美食" />
@@ -110,7 +144,7 @@ import="com.food.util.*"
 	<ul class="list-group vertical-menu yamm make-absolute">
 		<li class="list-group-item"><span><i class="fa fa-list-ul"></i> 美食类别</span></li>
 
-		<li class="highlight menu-item animate-dropdown"><a title="Value of the Day" href="home-v2.html">全城最高分</a></li>
+		<li class="highlight menu-item animate-dropdown"><a title="Value of the Day" href="FirstHighScore.do">全城最高分</a></li>
 
 		<li class="highlight menu-item animate-dropdown"><a title="Top 100 Offers" href="home-v3.html">全城最热门</a></li>
 
@@ -131,7 +165,7 @@ import="com.food.util.*"
 										<li class="nav-title">菜品类别</li>
 										<%
 										for(int i=0;i<info.FOODLIST1.length;i++){ %>
-											<li><a href="#"><%=info.FOODLIST1[i]%></a></li>
+											<li><a href="ChooseCategory.do?chooseCategory=<%=info.FOODLIST1[i]%>"><%=info.FOODLIST1[i]%></a></li>
 										<% }%>
 										
 									</ul>							
@@ -148,7 +182,7 @@ import="com.food.util.*"
 									<li class="nav-title"></li>
 										<%
 										for(int i=0;i<info.FOODLIST2.length;i++){ %>
-											<li><a href="#"><%=info.FOODLIST2[i]%></a></li>
+											<li><a href="ChooseCategory.do?chooseCategory=<%=info.FOODLIST2[i]%>"><%=info.FOODLIST2[i]%></a></li>
 										<% }%>
 									
 									</ul>
@@ -180,7 +214,7 @@ import="com.food.util.*"
 									<li class="nav-title">国别</li>
 										<%
 										for(int i=0;i<info.COUNTRYLIST1.length;i++){ %>
-											<li><a href="#"><%=info.COUNTRYLIST1[i]%></a></li>
+											<li><a href="Country.do?m_country=<%=info.COUNTRYLIST1[i]%>"><%=info.COUNTRYLIST1[i]%></a></li>
 										<% }%>
 										
 										
@@ -200,7 +234,7 @@ import="com.food.util.*"
 										<li class="nav-title"></li>
 										<%
 										for(int i=0;i<info.COUNTRYLIST2.length;i++){ %>
-											<li><a href="#"><%=info.COUNTRYLIST2[i]%></a></li>
+											<li><a href="Country.do?m_country=<%=info.COUNTRYLIST2[i]%>"><%=info.COUNTRYLIST2[i]%></a></li>
 										<% }%>
 										
 									</ul>
@@ -231,7 +265,7 @@ import="com.food.util.*"
 										<li class="nav-title">城市City</li>
 										<%
 										for(int i=0;i<info.CITYLIST1.length;i++){ %>
-											<li><a href="#"><%=info.CITYLIST1[i]%></a></li>
+											<li><a href="City.do?m_city=<%=info.CITYLIST1[i]%>"><%=info.CITYLIST1[i]%></a></li>
 										<% }%>
 										
 									</ul>
@@ -250,7 +284,7 @@ import="com.food.util.*"
 										<li class="nav-title"></li>
 										<%
 										for(int i=0;i<info.CITYLIST2.length;i++){ %>
-											<li><a href="#"><%=info.CITYLIST2[i]%></a></li>
+											<li><a href="City.do?m_city=<%=info.CITYLIST2[i]%>"><%=info.CITYLIST2[i]%></a></li>
 										<% }%>
 									</ul>
 
@@ -346,7 +380,7 @@ import="com.food.util.*"
 								快来清凉一夏吧
 							</div>
 							<div class="hero-action-btn fadeInDown-4">
-								<a href="single-product.html" class="big le-button ">搜索</a>
+								<a href="ChooseCategory.do?chooseCategory=Ice Cream" class="big le-button ">搜索</a>
 							</div>
 						</div><!-- /.caption -->
 					</div>
@@ -371,7 +405,7 @@ import="com.food.util.*"
 								热火夏天,火力全开
 							</div>
 							<div class="hero-action-btn fadeInDown-4">
-								<a href="single-product.html" class="big le-button ">搜索</a>
+								<a href="ChooseCategory.do?chooseCategory=Hot Pot" class="big le-button ">搜索</a>
 							</div>
 						</div><!-- /.caption -->
 					</div>
@@ -395,7 +429,7 @@ import="com.food.util.*"
 								全城最热烤肉
 							</div>
 							<div class="hero-action-btn fadeInDown-4">
-								<a href="single-product.html" class="big le-button ">搜索</a>
+								<a href="ChooseCategory.do?chooseCategory=Kebab" class="big le-button ">搜索</a>
 							</div>
 						</div><!-- /.caption -->
 					</div>
@@ -414,14 +448,14 @@ import="com.food.util.*"
 		<div class="ad col-xs-12 col-sm-4">
 			<div class="media">
 				<div class="media-left media-middle">
-					<img data-echo="assets/images/banner/1.jpg" src="assets/images/blank.gif" alt="">
+					<img  src="assets/images/banner/1.jpg" alt="">
 				</div>
 				<div class="media-body media-middle">
 					<div class="ad-text">
 						汤<br><strong>养生</strong>滋补<br>活血养肺
 					</div>
 					<div class="ad-action">
-						<a href="#">查看更多</a>
+						<a href="ChooseCategory.do?chooseCategory=Soup">查看更多</a>
 					</div>
 				</div>
 			</div>
@@ -430,14 +464,14 @@ import="com.food.util.*"
 		<div class="ad col-xs-12 col-sm-4">
 			<div class="media">
 				<div class="media-left media-middle">
-					<img data-echo="assets/images/banner/2.jpg" src="assets/images/blank.gif" alt="">
+					<img  src="assets/images/banner/2.jpg" alt="">
 				</div>
 				<div class="media-body media-middle">
 					<div class="ad-text">
 						甜点<br> 优质美食<br> <strong>甜蜜午后</strong>
 					</div>
 					<div class="ad-action">
-						<a href="#">查看更多</a>
+						<a href="ChooseCategory.do?chooseCategory=Desserts">查看更多</a>
 					</div>
 				</div>
 			</div>
@@ -446,14 +480,14 @@ import="com.food.util.*"
 		<div class="ad col-xs-12 col-sm-4">
 			<div class="media">
 				<div class="media-left media-middle">
-					<img data-echo="assets/images/banner/3.jpg" src="assets/images/blank.gif" alt="">
+					<img  src="assets/images/banner/3.jpg" alt="">
 				</div>
 				<div class="media-body media-middle">
 					<div class="ad-text">
 						粥 <br><strong>潮汕砂锅</strong><br>味蕾满足
 					</div>
 					<div class="ad-action">
-						<a href="#">查看更多</a>
+						<a href="ChooseCategory.do?chooseCategory=Soup">查看更多</a>
 					</div>
 				</div>
 			</div>
@@ -465,7 +499,400 @@ import="com.food.util.*"
 
 
 <!-- ============================================================= good place============================================================= -->                
+<section class="section-product-cards-carousel animate-in-view fadeIn animated" data-animation="fadeIn">
 
+	<header>
+
+		<h2 class="h1">热评好店</h2>
+
+		</header>
+
+	<div id="home-v1-product-cards-careousel">
+		<div class="woocommerce columns-3 home-v1-product-cards-carousel product-cards-carousel owl-carousel">
+
+				<ul class="products columns-3">
+														<li class="product product-card first">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=xfwRO04KbAPw_zRotCfWQQ" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive"style="width:100%;height:180px" src="assets/images/res/-gG-FFU7hRsEembOpILANg.jpg" alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=xfwRO04KbAPw_zRotCfWQQ" rel="tag" id="number1">点评数：2857</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=xfwRO04KbAPw_zRotCfWQQ">
+					<h3>店铺名：Hash House A Go Go</h3>
+				</a>
+
+				<div class="price-add-to-cart">
+				<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:80%"><strong class="rating">5</strong> out of 5</span></div>
+				
+				</div><!-- /.price-add-to-cart -->
+
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+														<li class="product product-card ">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=1yx2zLskVTe5WQdYjL2Apw" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive"style="width:100%;height:180px" src="assets/images/res/1bOVCGPMFIyIZ911xCZ-5Q.jpg" alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=1yx2zLskVTe5WQdYjL2Apw" rel="tag">点评数：2089</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=1yx2zLskVTe5WQdYjL2Apw">
+					<h3>店铺名：Egg & I</h3>
+				</a>
+
+				<div class="price-add-to-cart">
+				<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:90%"><strong class="rating">5</strong> out of 5</span></div>
+				
+				</div><!-- /.price-add-to-cart -->
+
+				
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+														<li class="product product-card last">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=vxxMqBaAHuWdx4impsLSSA" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive"style="width:100%;height:180px" src="assets/images/res/-38DQS30MHtGhtELctshhw.jpg" alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=vxxMqBaAHuWdx4impsLSSA" rel="tag">点评数：1746</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=vxxMqBaAHuWdx4impsLSSA">
+					<h3>店铺名：Studio B Show Kitchen Buffet</h3>
+				</a>
+
+				<div class="price-add-to-cart">	
+					<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:80%"><strong class="rating">5</strong> out of 5</span></div>
+			
+				</div><!-- /.price-add-to-cart -->
+
+
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+														<li class="product product-card first">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=QnAzW6KMSciUcuJ20oI3Bw" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive"style="width:100%;height:180px" src="assets/images/res/-cnxyn_QxjugHDmMq5bisg.jpg"  alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=QnAzW6KMSciUcuJ20oI3Bw" rel="tag">点评数：1368</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=QnAzW6KMSciUcuJ20oI3Bw">
+					<h3>店铺名：Joe\'s Farm Grill
+</h3>
+				</a>
+
+				<div class="price-add-to-cart">
+					
+				<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:80%"><strong class="rating">5</strong> out of 5</span></div>
+			
+		
+				</div><!-- /.price-add-to-cart -->
+
+
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+														<li class="product product-card ">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=MuIXnv7Oq7X3-4aEsp9dDA" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive" style="width:100%;height:180px" src="assets/images/res/0LexaqzfV4fvlVQ_Lpro5Q.jpg"  alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=MuIXnv7Oq7X3-4aEsp9dDA" rel="tag">点评数：1324</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=MuIXnv7Oq7X3-4aEsp9dDA">
+					<h3>店铺名：Citizen Public House</h3>
+				</a>
+
+				<div class="price-add-to-cart">
+				<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:90%"><strong class="rating">5</strong> out of 5</span></div>
+			
+				</div><!-- /.price-add-to-cart -->
+
+
+
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+														<li class="product product-card last">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=YacTpiq0ZptFcXD7I-kdGA" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive" style="width:100%;height:180px"src="assets/images/res/-RJuQG1NTg-Ek7MqTQPiOg.jpg" alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=YacTpiq0ZptFcXD7I-kdGA" rel="tag">点评数：1279</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=YacTpiq0ZptFcXD7I-kdGA">
+					<h3>店铺名：Delmonico Steakhouse
+</h3>
+				</a>
+
+				<div class="price-add-to-cart">
+				<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:80%"><strong class="rating">5</strong> out of 5</span></div>
+			
+				</div><!-- /.price-add-to-cart -->
+
+				
+
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+							</ul>
+					<ul class="products columns-3">
+														<li class="product product-card first">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=iXA8Y2bzvZo8MjALfZxrIg" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive" style="width:100%;height:180px"src="assets/images/res/1J0ZbM-46TaAdRISM3gWOA.jpg" alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=iXA8Y2bzvZo8MjALfZxrIg" rel="tag">点评数：1127</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=iXA8Y2bzvZo8MjALfZxrIg">
+					<h3>店铺名：Margaritaville</h3>
+				</a>
+
+				<div class="price-add-to-cart">
+				<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:70%"><strong class="rating">5</strong> out of 5</span></div>
+				
+
+				</div><!-- /.price-add-to-cart -->
+
+				
+
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+														<li class="product product-card ">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=Z0kyK8wCBNGkkUT9UrMWcg" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive" style="width:100%;height:180px"src="assets/images/res/-dakRiHsHRtDzp4MX7mviQ.jpg"  alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=Z0kyK8wCBNGkkUT9UrMWcg" rel="tag">点评数：1098</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=Z0kyK8wCBNGkkUT9UrMWcg">
+					<h3>店铺名：Del Frisco\'s Double Eagle Steak House
+</h3>
+				</a>
+
+				<div class="price-add-to-cart">
+				<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:90%"><strong class="rating">5</strong> out of 5</span></div>
+			
+				</div><!-- /.price-add-to-cart -->
+
+				
+
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+														<li class="product product-card last">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=sih8j621A66QoiUFues5qQ" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive"style="width:100%;height:180px" src="assets/images/res/-fmxvoKvdglsE3bXgq4lig.jpg"  alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=sih8j621A66QoiUFues5qQ" rel="tag">点评数：1093</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=sih8j621A66QoiUFues5qQ">
+					<h3>店铺名：Carson Kitchen
+</h3>
+				</a>
+
+				<div class="price-add-to-cart">
+					<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:90%"><strong class="rating">5</strong> out of 5</span></div>
+			
+				</div><!-- /.price-add-to-cart -->
+
+				
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+														<li class="product product-card first">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=IyCwqORkMSmK4mAgAFHgnA" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive"style="width:100%;height:180px" src="assets/images/res/-StWq6VT-sPZUCMZ2QIbFQ.jpg"  alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=IyCwqORkMSmK4mAgAFHgnA" rel="tag">点评数：1033</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=IyCwqORkMSmK4mAgAFHgnA">
+					<h3>店铺名：Firefly
+</h3>
+				</a>
+
+				<div class="price-add-to-cart">
+					<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:90%"><strong class="rating">5</strong> out of 5</span></div>
+			
+				</div><!-- /.price-add-to-cart -->
+
+				
+
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+														<li class="product product-card ">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=1NZLxU5WvB5roPFzneAlLw" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive" style="width:100%;height:180px"src="assets/images/res/2I1zlS0GDlYe6L14c_Z6rA.jpg" alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=1NZLxU5WvB5roPFzneAlLw" rel="tag">点评数：963</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=1NZLxU5WvB5roPFzneAlLw">
+					<h3>店铺名：Barrio Caf茅
+</h3>
+				</a>
+
+				<div class="price-add-to-cart">
+					<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:80%"><strong class="rating">5</strong> out of 5</span></div>
+			
+				</div><!-- /.price-add-to-cart -->
+
+				
+
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+														<li class="product product-card last">
+
+    <div class="product-outer">
+		<div class="media product-inner">
+
+			<a class="media-left" href="SingleBusinessDetail.do?m_businessId=t6SuvEq9PPVGzNv5bJzDtw" title="Pendrive USB 3.0 Flash 64 GB">
+				<img class="media-object wp-post-image img-responsive" style="width:100%;height:180px"src="assets/images/res/-iml85rXdvpsDbWRMgs3zg.jpg"  alt="">
+
+			</a>
+
+			<div class="media-body">
+				<span class="loop-product-categories">
+					<a href="SingleBusinessDetail.do?m_businessId=t6SuvEq9PPVGzNv5bJzDtw" rel="tag">点评数：946</a>
+				</span>
+
+				<a href="SingleBusinessDetail.do?m_businessId=t6SuvEq9PPVGzNv5bJzDtw">
+					<h3>店铺名：Bachi Burger
+</h3>
+				</a>
+
+				<div class="price-add-to-cart">
+					<div class="star-rating" title="Rated 5 out of 5"><span if="spanStar1"style="width:80%"><strong class="rating">5</strong> out of 5</span></div>
+			
+				</div><!-- /.price-add-to-cart -->
+
+
+			</div>
+		</div><!-- /.product-inner -->
+	</div><!-- /.product-outer -->
+
+					</li><!-- /.products -->
+							</ul>
+				</div>
+	</div><!-- #home-v1-product-cards-careousel -->
+
+</section>
 <!-- ============================================================= end good place============================================================= -->                
 
             </main><!-- #main -->
@@ -479,7 +906,7 @@ import="com.food.util.*"
 <!-- ============================================================= end guess you like============================================================= -->              
           
 <!-- ============================================================= freely============================================================= -->    
-<h2 class="sr-only">5分好店</h2>
+<h3 class="h3"style="padding-left:40px">5分好店</h3>
 <section class="brands-carousel">
 
 	<div class="container">
@@ -487,7 +914,7 @@ import="com.food.util.*"
 
 			<div class="item">
 				
-				<a href="#">
+				<a href="#"id="aLink1">
 
 					<figure>			
 						 <img id="myimg1" src="assets/images/res/_2Sxy4s9KQm5XWoqZlmAQw.jpg" class="img-responsive" alt="图片加载失败">
@@ -499,7 +926,7 @@ import="com.food.util.*"
 			</div><!-- /.item -->
 						<div class="item">
 				
-				<a href="#">
+				<a href="#"id="aLink2">
 
 					<figure>			
 						 <img id="myimg2" src="assets/images/res/_2Sxy4s9KQm5XWoqZlmAQw.jpg" class="img-responsive" alt="图片加载失败">
@@ -511,7 +938,7 @@ import="com.food.util.*"
 			</div><!-- /.item -->
 						<div class="item">
 				
-				<a href="#">
+				<a href="#"id="aLink3">
 
 					<figure>			
 						 <img id="myimg3" src="assets/images/res/_2Sxy4s9KQm5XWoqZlmAQw.jpg" class="img-responsive" alt="图片加载失败">
@@ -523,7 +950,7 @@ import="com.food.util.*"
 			</div><!-- /.item -->
 						<div class="item">
 				
-				<a href="#">
+				<a href="#"id="aLink4">
 
 					<figure>			
 						 <img id="myimg4" src="assets/images/res/_2Sxy4s9KQm5XWoqZlmAQw.jpg" class="img-responsive" alt="图片加载失败">
@@ -535,7 +962,7 @@ import="com.food.util.*"
 			</div><!-- /.item -->
 						<div class="item">
 				
-				<a href="#">
+				<a href="#"id="aLink5">
 
 					<figure>			
 						 <img id="myimg5" src="assets/images/res/_2Sxy4s9KQm5XWoqZlmAQw.jpg" class="img-responsive" alt="图片加载失败">
@@ -547,7 +974,7 @@ import="com.food.util.*"
 			</div><!-- /.item -->
 									<div class="item">
 				
-				<a href="#">
+				<a href="#"id="aLink6">
 
 					<figure>			
 						 <img id="myimg6" src="assets/images/res/_2Sxy4s9KQm5XWoqZlmAQw.jpg" class="img-responsive" alt="图片加载失败">
@@ -559,7 +986,7 @@ import="com.food.util.*"
 			</div><!-- /.item -->
 						<div class="item">
 				
-				<a href="#">
+				<a href="#"id="aLink7">
 
 					<figure>			
 						 <img id="myimg7" src="assets/images/res/_2Sxy4s9KQm5XWoqZlmAQw.jpg" class="img-responsive" alt="图片加载失败">
@@ -571,7 +998,7 @@ import="com.food.util.*"
 			</div><!-- /.item -->
 						<div class="item">
 				
-				<a href="#">
+				<a href="#"id="aLink8">
 
 					<figure>			
 						 <img id="myimg8" src="assets/images/res/_2Sxy4s9KQm5XWoqZlmAQw.jpg" class="img-responsive" alt="图片加载失败">
@@ -583,7 +1010,7 @@ import="com.food.util.*"
 			</div><!-- /.item -->
 						<div class="item">
 				
-				<a href="#">
+				<a href="#"id="aLink9">
 
 					<figure>			
 						 <img id="myimg9" src="assets/images/res/_2Sxy4s9KQm5XWoqZlmAQw.jpg" class="img-responsive" alt="图片加载失败">
@@ -593,9 +1020,9 @@ import="com.food.util.*"
 				</a>	
 							
 			</div><!-- /.item -->
-									<div class="item">
+				<div class="item">
 				
-				<a href="#">
+				<a href="#"id="aLink10">
 
 					<figure>			
 						 <img id="myimg10" src="assets/images/res/_2Sxy4s9KQm5XWoqZlmAQw.jpg" class="img-responsive" alt="图片加载失败">
@@ -657,16 +1084,27 @@ $.ajax({
     success: function(result){    
     	result = eval(result);
     	
-    	document.getElementById('myimg1').src="assets/images/res/"+result[0]+".jpg";
-    	document.getElementById('myimg2').src="assets/images/res/"+result[1]+".jpg";
-    	document.getElementById('myimg3').src="assets/images/res/"+result[2]+".jpg";
-    	document.getElementById('myimg4').src="assets/images/res/"+result[3]+".jpg";
-    	document.getElementById('myimg5').src="assets/images/res/"+result[4]+".jpg";
-    	document.getElementById('myimg6').src="assets/images/res/"+result[5]+".jpg";
-    	document.getElementById('myimg7').src="assets/images/res/"+result[6]+".jpg";
-    	document.getElementById('myimg8').src="assets/images/res/"+result[7]+".jpg";
-    	document.getElementById('myimg9').src="assets/images/res/"+result[8]+".jpg";
-    	document.getElementById('myimg10').src="assets/images/res/"+result[9]+".jpg";
+    	document.getElementById('aLink1').href="SingleBusinessDetail.do?m_businessId="+result[0].business_id;
+    	document.getElementById('aLink2').href="SingleBusinessDetail.do?m_businessId="+result[1].business_id;
+    	document.getElementById('aLink3').href="SingleBusinessDetail.do?m_businessId="+result[2].business_id;
+    	document.getElementById('aLink4').href="SingleBusinessDetail.do?m_businessId="+result[3].business_id;
+    	document.getElementById('aLink5').href="SingleBusinessDetail.do?m_businessId="+result[4].business_id;
+    	document.getElementById('aLink6').href="SingleBusinessDetail.do?m_businessId="+result[5].business_id;
+    	document.getElementById('aLink7').href="SingleBusinessDetail.do?m_businessId="+result[6].business_id;
+    	document.getElementById('aLink8').href="SingleBusinessDetail.do?m_businessId="+result[7].business_id;
+    	document.getElementById('aLink9').href="SingleBusinessDetail.do?m_businessId="+result[8].business_id;
+    	document.getElementById('aLink10').href="SingleBusinessDetail.do?m_businessId="+result[9].business_id;
+    	
+    	document.getElementById('myimg1').src="assets/images/res/"+result[0].photo_id+".jpg";
+    	document.getElementById('myimg2').src="assets/images/res/"+result[1].photo_id+".jpg";
+    	document.getElementById('myimg3').src="assets/images/res/"+result[2].photo_id+".jpg";
+    	document.getElementById('myimg4').src="assets/images/res/"+result[3].photo_id+".jpg";
+    	document.getElementById('myimg5').src="assets/images/res/"+result[4].photo_id+".jpg";
+    	document.getElementById('myimg6').src="assets/images/res/"+result[5].photo_id+".jpg";
+    	document.getElementById('myimg7').src="assets/images/res/"+result[6].photo_id+".jpg";
+    	document.getElementById('myimg8').src="assets/images/res/"+result[7].photo_id+".jpg";
+    	document.getElementById('myimg9').src="assets/images/res/"+result[8].photo_id+".jpg";
+    	document.getElementById('myimg10').src="assets/images/res/"+result[9].photo_id+".jpg";
     } ,
     error:function(result){  
     	alert("out"); 
@@ -674,21 +1112,6 @@ $.ajax({
     } 
 });
 
-  
-function selectList(){
-    $.ajax({
-        url:'<%=request.getContextPath()%>/user/selectList.do',
-        type:'post',
-        async : false, //默认为true 异步
-        dataType:'json',
-        error:function(){
-            alert('error');
-        },
-        success:function(data){
-            alert(data)
-        }
-    });
-}
 </script>
     </body>
 </html>

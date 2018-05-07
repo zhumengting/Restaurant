@@ -1,4 +1,4 @@
-package Models;
+package com.food.model;
 
 public class Photo {
 	private String photo_id = "";

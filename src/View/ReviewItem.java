@@ -1,37 +1,13 @@
-package Models;
+package com.food.view;
 
-public class Review {
-	private String business_id="";
+public class ReviewItem {
 	private String date="";
 	private String review_id="";
+	private String userName="";
 	private String text="";
 	private String votes="";
 	private int stars;
-	private String user_id="";
-	/**
-	 * @return the business_id
-	 */
-	public String getBusiness_id() {
-		return business_id;
-	}
-	/**
-	 * @param business_id the business_id to set
-	 */
-	public void setBusiness_id(String business_id) {
-		this.business_id = business_id;
-	}
-	/**
-	 * @return the date
-	 */
-	public String getDate() {
-		return date;
-	}
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(String date) {
-		this.date = date;
-	}
+	private String user_id = "";
 	/**
 	 * @return the review_id
 	 */
@@ -43,6 +19,18 @@ public class Review {
 	 */
 	public void setReview_id(String review_id) {
 		this.review_id = review_id;
+	}
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	/**
 	 * @return the text
@@ -80,9 +68,28 @@ public class Review {
 	public void setStars(int stars) {
 		this.stars = stars;
 	}
+	
+	/**
+	 * @return the date
+	 */
+	public String getDate() {
+		return date;
+	}
+	/**
+	 * @param date the date to set
+	 */
+	public void setDate(String date) {
+		this.date = date;
+	}
+	/**
+	 * @return the user_id
+	 */
 	public String getUser_id() {
 		return user_id;
 	}
+	/**
+	 * @param user_id the user_id to set
+	 */
 	public void setUser_id(String user_id) {
 		this.user_id = user_id;
 	}

@@ -1,26 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-import="com.food.util.*"
+import="com.food.util.*,com.food.model.*"
     pageEncoding="UTF-8"%>
-    <%@ page language="java" import="com.food.model.User" %>
 <%
+    User user=(User)request.getSession().getAttribute("loginUser");
 	//在页面上显示cookie
-	if(request.getAttribute("user")==null){
-		String username=null;
-		String password=null;
+	if(user==null){
+		String loginCookieId=null;
+		String loginCookiePassword=null;
 		Cookie[] cookies=request.getCookies();
-		for(int i=0;cookies!=null&& i<cookies.length;i++){
-			if(cookies[i].getName().equals("user")){
-				username=cookies[i].getValue().split("-")[0];
-				password=cookies[i].getValue().split("-")[1];
-			}
-		}
-		if(username==null){
-			username="";
-		}
-		if(password==null){
-			password="";
-		}
-		pageContext.setAttribute("user", new User(username,password));
+		for(Cookie cookie : cookies){     
+            if("loginId".equals(cookie.getName())){  
+                loginCookieId = cookie.getValue();  
+            }else if("loginPassword".equals(cookie.getName())){  
+                loginCookiePassword = cookie.getValue();  
+            }
+            }
+		 if(loginCookieId!=null) user=new User(loginCookieId,loginCookiePassword);
+		 else user=new User("","");
+			user.setName("请登陆");
+	}else{
+		pageContext.setAttribute("loginUser",user);
 	}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -76,7 +75,7 @@ import="com.food.util.*"
 			<ul id="menu-top-bar-right" class="nav nav-inline pull-right animate-dropdown flip">
                 <li class="menu-item animate-dropdown"><a title="Store Locator" href="#"><i class="ec ec-map-pointer"></i>北京</a></li>
                 <!-- <li class="menu-item animate-dropdown"><a title="Track Your Order" href="track-your-order.html"><i class="ec ec-transport"></i>Track Your Order</a></li> -->
-                <li class="menu-item animate-dropdown"><a title="登陆" href="shop.html"><i class="ec ec-shopping-bag"></i>登陆</a></li>
+                <li class="menu-item animate-dropdown"><a title="登陆" href="shop.html"><i class="ec ec-shopping-bag"></i><input type="text" style="border:0;width:120px;readonly = "readonly"  id="username" value="你好，<%=user.getName()%>" name="username"/></a></li>
                 <li class="menu-item animate-dropdown"><a title="个人空间" href="my-account.html"><i class="ec ec-user"></i>个人空间</a></li>
             </ul>
 		</nav>
@@ -366,31 +365,37 @@ import="com.food.util.*"
 
 										<h2>Login</h2>
 
-										<form method="post" class="login" action="login.do" method="post" onsubmit="return checkForm()">
+										<form method="post" class="login" action="login.do" method="post" onsubmit="return checkLogin()">
 
 											<p class="before-login-text">
 												Welcome back! Sign in to your account
 											</p>
 
 											<p class="form-row form-row-wide">
-												<label for="username">Username 
+												<label for="username">Phone number 
 												<span class="required">*</span></label>
-												<input type="text" class="input-text" name="username" id="username" value="" />
+												<input type="tel" class="input-text" name="phoneNum" id="phoneNum" value="<%=user.getUser_id()%>" />
 											</p>
 
 											<p class="form-row form-row-wide">
 												<label for="password">Password
 												<span class="required">*</span></label>
-												<input class="input-text" type="password" name="password" id="password" />
+												<input class="input-text" type="password" name="password" id="password" value="<%=user.getPassword()%>"/>
 											</p>
-
+                                             <%if(request.getAttribute("error1")!=null){%>
+											
+											<p><label style="color:red">Password or Phone number wrong
+												</label></p>
+												
+												<%} %>
 
 											<p class="form-row">
 												<input class="button" type="submit" value="Login" name="login">
 												<label for="rememberme" class="inline">
-													<input name="rememberme" type="checkbox" id="rememberme" value="forever" /> Remember me
+													<input name="rememberme" type="checkbox" id="rememberme" name="rememberme" value="forever" /> Remember me
 												</label>
 											</p>
+										
 
 											<p class="lost_password">
 												<a href="login-and-register.html">Lost your password?</a>
@@ -405,7 +410,7 @@ import="com.food.util.*"
 
 										<h2>Register</h2>
 
-										<form method="post" class="register">
+										<form method="post" class="register" action="register.do" method="post" onsubmit="return checkRegister()">
 
 											<p class="before-register-text">
 												Create your very own account
@@ -413,9 +418,25 @@ import="com.food.util.*"
 
 
 											<p class="form-row form-row-wide">
-												<label for="reg_email">Email address
+												<label >Phone number
 												<span class="required">*</span></label>
-												<input type="email" class="input-text" name="email" id="reg_email" value="" />
+												<input type="tel" class="input-text" name="phoneNumIn" id="phoneNumIn" value="" />
+												<%if(request.getAttribute("error2")!=null){%>				
+											<label style="color:red">Phone number has been used</label>
+												<%}%>
+											</p>
+											
+											
+											<p class="form-row form-row-wide">
+												<label >Username
+												<span class="required">*</span></label>
+												<input type="text" class="input-text" name="usernameIn" id="usernameIn" value="" />
+											</p>
+											
+											<p class="form-row form-row-wide">
+												<label >Password
+												<span class="required">*</span></label>
+												<input type="password" class="input-text" name="passIn" id="passIn" value="" />
 											</p>
 
 
@@ -423,14 +444,7 @@ import="com.food.util.*"
 												<input type="submit" class="button" name="register" value="Register" />
 											</p>
 
-											<div class="register-benefits">
-												<h3>Sign up today and you will be able to :</h3>
-												<ul>
-													<li>Make comments</li>
-													<li>Find your favourite foods</li>
-													<li>Keep a record of all your searching</li>
-												</ul>
-											</div>
+								
 
 										</form>
 
@@ -483,10 +497,29 @@ import="com.food.util.*"
 
         <script src="switchstylesheet/switchstylesheet/switchstylesheet.js"></script>
 <script type="text/javascript">
-	function checkForm(){
-		var userName=document.getElementById("username").value;
+	function checkLogin(){
+		var phoneNum=document.getElementById("phoneNum").value;
 		var password=document.getElementById("password").value;
-		if(userName==null||userName==""){
+		if(phoneNum==null||phoneNum==""){
+			alert("电话号码不能为空!");
+			return false;
+		}
+		if(password==null||password==""){
+			alert("密码不能为空!");
+			return false;
+		}
+		return true;
+	}
+	
+	function checkRegister(){
+		var phoneNum=document.getElementById("phoneNumIn").value;
+		var password=document.getElementById("passIn").value;
+		var username=document.getElementById("usernameIn").value;
+		if(phoneNum==null||phoneNum==""){
+			alert("电话号码不能为空!");
+			return false;
+		}
+		if(username==null||username==""){
 			alert("用户名不能为空!");
 			return false;
 		}

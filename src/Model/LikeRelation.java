@@ -1,4 +1,4 @@
-package Model;
+package com.food.model;
 
 public class LikeRelation {
 

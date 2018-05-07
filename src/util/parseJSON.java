@@ -1,4 +1,4 @@
-package parseJSONTool;
+package com.food.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,10 +9,8 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 
-import Model.Business;
-import Model.Photo;
-import Model.Review;
-import Model.User;
+import com.food.model.*;
+
 
 
 public class parseJSON {
