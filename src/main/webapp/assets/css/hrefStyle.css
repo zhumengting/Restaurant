@@ -1,0 +1,36 @@
+@charset "UTF-8";
+@media{
+body         
+{ font-family: Tahoma; font-size: 8pt }
+.leftmenu {
+        width:150px;
+}
+.leftmenu li {
+        display: inline;
+        white-space: nowrap;
+}
+
+.leftmenu span,
+.leftmenu a:active,
+.leftmenu a:visited,
+.leftmenu a:link {
+	display: block;
+   
+	    text-decoration: none;
+	margin: 6px 10px 6px 0px;
+	padding: 2px 6px 2px 6px;
+	color: white;
+	background-color: #FFD700	;
+      border:0px solid;
+	border-radius: 30px;
+}
+
+.leftmenu a:hover {
+	color: white;
+	background-color: black;
+}
+
+.leftmenu span {
+	color: #a13100;
+	}
+}
